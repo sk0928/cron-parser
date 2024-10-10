@@ -7,9 +7,6 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class MinuteParser extends AbstractBaseParser {
-
-  public static final String MINUTE_LABEL = "minute";
-
   //regex for field for a range of values, e.g. 5-10
   private static final Pattern RANGE_EXP = Pattern.compile("^(\\d|[0-5]\\d)-(\\d|[0-5]\\d)$");
 

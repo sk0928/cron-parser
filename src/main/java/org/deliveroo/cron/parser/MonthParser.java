@@ -5,10 +5,6 @@ import org.deliveroo.cron.model.CronSegment;
 import java.util.regex.Pattern;
 
 public class MonthParser extends AbstractBaseParser {
-
-  public static final int MIN = 1;
-  public static final int MAX = 12;
-
   //regex for field for a range of values, e.g. 5-10
   private static final Pattern RANGE_EXP = Pattern.compile("^([1-9]|1[0-2])-([1-9]|1[0-2])$");
 
