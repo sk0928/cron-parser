@@ -29,9 +29,9 @@ public abstract class AbstractBaseParser {
     if (expression.equals(WILD_CARD)) {
       cronSegmentValue = buildForWildCard();
     } else if (rangeMatcher.find()) {
-      cronSegmentValue = buildFromRangeExpression(rangeMatcher);
+      cronSegmentValue = buildFromRangeExpression(rangeMatcher, expression);
     } else if (cadenceMatcher.find()) {
-      cronSegmentValue = buildFromCadenceExpression(cadenceMatcher);
+      cronSegmentValue = buildFromCadenceExpression(cadenceMatcher, expression);
     } else if (oneOrMultiMatcher.find()) {
       cronSegmentValue = buildFromOneOrMultiExpression(expression);
     } else {
@@ -45,13 +45,16 @@ public abstract class AbstractBaseParser {
     return CronUtils.buildFromSegmentRange(getCronSegment().getSegmentRange());
   }
 
-  private String buildFromRangeExpression(Matcher rangeMatcher) {
+  private String buildFromRangeExpression(Matcher rangeMatcher, String expression) {
     int exp_min = Integer.parseInt(rangeMatcher.group(1));
     int exp_max = Integer.parseInt(rangeMatcher.group(2));
+    if(exp_min > exp_max){
+      throw new InvalidCronExpressionException(String.format("Incorrect %s: %s", getCronSegment(), expression));
+    }
     return CronUtils.buildStringFromIntRange(exp_min, exp_max);
   }
 
-  private String buildFromCadenceExpression(Matcher cadenceMatcher) {
+  private String buildFromCadenceExpression(Matcher cadenceMatcher, String expression) {
     int min;
     int max;
     if(cadenceMatcher.group(1).equals(WILD_CARD)){
@@ -60,6 +63,9 @@ public abstract class AbstractBaseParser {
     } else {
       min = Integer.parseInt(cadenceMatcher.group(2));
       max = Integer.parseInt(cadenceMatcher.group(3));
+      if(min > max){
+        throw new InvalidCronExpressionException(String.format("Incorrect %s: %s", getCronSegment(), expression));
+      }
     }
     int cadence = Integer.parseInt(cadenceMatcher.group(4));
     return CronUtils.buildStringFromCadence(min, max, cadence);
